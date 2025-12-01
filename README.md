@@ -45,11 +45,6 @@ The Coach agent uses a phase-aware system prompt that:
 3. **Phase-specific guidance**: Each phase has different goals and requirements
 4. **Session data context**: Includes collected energizers, drainers, stories, patterns
 
-Key prompt sections:
-- `getCoachSystemPrompt()` in `src/prompts.ts`
-- Phase context via `getPhaseContext()`
-- Session summary via `getSessionContext()`
-
 ### Quality Checker Agent Prompt
 
 The Quality Checker audits coaching quality and returns structured JSON:
@@ -156,83 +151,6 @@ interface EnergyItem {
 - Messages stored in component state
 - Phase transitions tracked with message counts
 - Auto-restore on page refresh
-
-## Installation
-
-### Method 1: Via Install Script
-
-```bash
-cd /path/to/BrainDrive-Core/backend
-python scripts/install_whydetector.py
-```
-
-### Method 2: Via Lifecycle Manager
-
-The plugin auto-installs when BrainDrive detects it in the plugins folder.
-
-### Post-Installation
-
-1. Restart BrainDrive backend
-2. Go to Page Builder
-3. Find "Why Discovery Coach" in left panel
-4. Drag to canvas and publish page
-
-## Development
-
-### Building
-
-```bash
-cd backend/plugins/shared/BrainDriveWhyDetector/v1.0.0
-npm install
-npm run build
-```
-
-### Development Mode
-
-```bash
-npm run dev  # Watches for changes
-```
-
-### Testing Changes
-
-1. Make code changes in `src/`
-2. Run `npm run build`
-3. Refresh BrainDrive page (Ctrl+F5)
-4. Changes appear immediately (no reinstall needed)
-
-## File Structure
-
-```
-BrainDriveWhyDetector/v1.0.0/
-├── dist/                    # Built output (auto-generated)
-│   ├── remoteEntry.js       # Module Federation entry
-│   ├── main.js              # Main bundle
-│   └── ...
-├── public/
-│   └── index.html           # Dev server template
-├── src/
-│   ├── index.tsx            # Entry point
-│   ├── BrainDriveWhyDetector.tsx  # Main component
-│   ├── BrainDriveWhyDetector.css  # Styles
-│   ├── types.ts             # Type definitions
-│   ├── prompts.ts           # AI prompts
-│   └── services/
-│       ├── aiService.ts     # AI communication
-│       └── index.ts
-├── lifecycle_manager.py     # Plugin installer
-├── package.json
-├── tsconfig.json
-├── webpack.config.js
-└── README.md
-```
-
-## Service Bridges Used
-
-| Bridge | Usage |
-|--------|-------|
-| `api` | Fetch models, send prompts, streaming responses |
-| `theme` | Light/dark mode support |
-| `pluginState` | Session persistence |
 
 ## Known Limitations
 
