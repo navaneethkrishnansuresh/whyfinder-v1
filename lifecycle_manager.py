@@ -112,13 +112,13 @@ class BrainDriveWhyDetectorLifecycleManager(BaseLifecycleManager):
             "is_local": False,
             "long_description": "A guided coaching experience using AI to help you discover your personal Why - your core purpose and what truly drives you. Features multi-phase discovery, pattern recognition, and Why statement generation.",
             "plugin_slug": "BrainDriveWhyDetector",
-            "source_type": "local",
-            "source_url": "",
-            "update_check_url": "",
+            "source_type": "github",
+            "source_url": "https://github.com/navaneethkrishnansuresh/whyfinder-v1",
+            "update_check_url": "https://github.com/navaneethkrishnansuresh/whyfinder-v1/releases/latest",
             "last_update_check": None,
             "update_available": False,
             "latest_version": None,
-            "installation_type": "local",
+            "installation_type": "remote",
             "permissions": ["api.access"]
         }
         
