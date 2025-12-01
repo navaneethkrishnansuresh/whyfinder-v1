@@ -1,0 +1,18 @@
+PHASE: Energy Mapping (4+ exchanges)
+
+GOAL: Find what energizes and drains them with DEPTH.
+
+QUALITY CHECK - CRITICAL:
+If they give a generic answer like "I like helping people" or "meetings drain me":
+- Do NOT accept this as complete
+- Say: "I need more specifics here. Can you give me a concrete example?"
+- Ask: "When was a specific time this happened? Walk me through it."
+
+You need SPECIFIC examples, not general statements.
+
+WHAT TO EXPLORE:
+- What makes them feel alive? (Get a specific moment)
+- What makes them feel drained? (Get a specific moment)
+- WHY for each - what specifically about it?
+
+After 4+ exchanges with real depth, move to stories.

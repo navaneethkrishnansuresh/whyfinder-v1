@@ -1,0 +1,78 @@
+const path = require("path");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const { ModuleFederationPlugin } = require("webpack").container;
+const deps = require("./package.json").dependencies;
+
+module.exports = {
+  mode: "development",
+  entry: "./src/index",
+  output: {
+    // For development: build directly to this folder's dist
+    path: path.resolve(__dirname, 'dist'),
+    // For rapid development, uncomment below and point to your BrainDrive backend path:
+    // path: path.resolve(__dirname, '/path/to/your/BrainDrive-Core/backend/plugins/shared/BrainDriveWhyDetector/v1.0.0/dist'),
+    publicPath: "auto",
+    clean: true,
+    library: {
+      type: 'var',
+      name: 'BrainDriveWhyDetector'
+    }
+  },
+  resolve: {
+    extensions: [".tsx", ".ts", ".js"],
+  },
+  module: {
+    rules: [
+      {
+        test: /\.(ts|tsx)$/,
+        use: "ts-loader",
+        exclude: /node_modules/,
+      },
+      {
+        test: /\.css$/,
+        use: [
+          'style-loader',
+          'css-loader'
+        ]
+      },
+      {
+        test: /\.txt$/,
+        type: 'asset/source'
+      }
+    ],
+  },
+  plugins: [
+    new ModuleFederationPlugin({
+      name: "BrainDriveWhyDetector",
+      library: { type: "var", name: "BrainDriveWhyDetector" },
+      filename: "remoteEntry.js",
+      exposes: {
+        "./BrainDriveWhyDetector": "./src/index",
+      },
+      shared: {
+        react: {
+          singleton: true,
+          requiredVersion: deps.react,
+          eager: true
+        },
+        "react-dom": {
+          singleton: true,
+          requiredVersion: deps["react-dom"],
+          eager: true
+        }
+      }
+    }),
+    new HtmlWebpackPlugin({
+      template: "./public/index.html",
+    }),
+  ],
+  devServer: {
+    port: 3002,
+    static: {
+      directory: path.join(__dirname, "public"),
+    },
+    hot: true,
+  },
+};
+
+
