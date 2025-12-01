@@ -808,7 +808,9 @@ class BrainDriveWhyDetectorLifecycleManager(BaseLifecycleManager):
         """Delete plugin for user"""
         try:
             logger.info(f"BrainDriveWhyDetector: Starting deletion for {user_id}")
-            result = await self.uninstall_for_user(user_id, db)
+            # Call _perform_user_uninstallation directly (don't use base class uninstall_for_user 
+            # which checks active_users runtime set)
+            result = await self._perform_user_uninstallation(user_id, db)
             return result
         except Exception as e:
             logger.error(f"BrainDriveWhyDetector: Delete failed: {e}")
