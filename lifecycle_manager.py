@@ -97,9 +97,9 @@ class BrainDriveWhyDetectorLifecycleManager(BaseLifecycleManager):
         """Initialize the lifecycle manager"""
         # Plugin metadata
         self.plugin_data = {
-            "name": "Why Finder",
+            "name": "BrainDriveWhyDetector",
             "description": "Find Your Why - Multi-agent coaching flow to discover your core purpose",
-            "version": "1.0.0",
+            "version": "1.0.2",
             "type": "frontend",
             "icon": "Target",
             "category": "coaching",
@@ -612,7 +612,7 @@ class BrainDriveWhyDetectorLifecycleManager(BaseLifecycleManager):
             """)
             existing_result = await db.execute(check_stmt, {
                 "user_id": user_id,
-                "route": "why-finder"
+                "route": "why-finder-v1"
             })
             existing = existing_result.fetchone()
             
@@ -621,31 +621,32 @@ class BrainDriveWhyDetectorLifecycleManager(BaseLifecycleManager):
                 logger.info(f"BrainDriveWhyDetector: Page already exists for {user_id}", page_id=existing_page_id)
                 return {"success": True, "page_id": existing_page_id, "created": False}
             
-            # Construct the module ID directly using the known format
-            # Format: {user_id}_{plugin_slug}_{module_name}
-            plugin_slug = self.plugin_data['plugin_slug']
-            module_name = self.module_data[0]['name']  # "BrainDriveWhyDetector"
-            module_id = f"{user_id}_{plugin_slug}_{module_name}"
+            # Find the module ID
+            module_id = None
+            for mid in modules_created:
+                if mid.endswith("_BrainDriveWhyDetector"):
+                    module_id = mid
+                    break
             
-            # Verify the module exists in database
-            verify_stmt = text("""
-                SELECT id FROM module WHERE id = :module_id AND user_id = :user_id
-            """)
-            verify_result = await db.execute(verify_stmt, {
-                "module_id": module_id,
-                "user_id": user_id
-            })
-            if not verify_result.fetchone():
-                # Fallback: search in modules_created list
-                for mid in modules_created:
-                    if mid.endswith(f"_{module_name}"):
-                        module_id = mid
-                        break
-                else:
-                    logger.error(f"BrainDriveWhyDetector: Module not found for {user_id}, expected: {module_id}")
-                    return {"success": False, "error": f"Module {module_id} not found in database"}
+            if not module_id:
+                # Fallback query
+                module_stmt = text("""
+                    SELECT id FROM module
+                    WHERE user_id = :user_id AND plugin_id = :plugin_id AND name = :name
+                """)
+                plugin_id = f"{user_id}_{self.plugin_data['plugin_slug']}"
+                module_result = await db.execute(module_stmt, {
+                    "user_id": user_id,
+                    "plugin_id": plugin_id,
+                    "name": "BrainDriveWhyDetector"
+                })
+                module_row = module_result.fetchone()
+                if module_row:
+                    module_id = module_row.id if hasattr(module_row, "id") else module_row[0]
             
-            logger.info(f"BrainDriveWhyDetector: Using module ID: {module_id} for user {user_id}")
+            if not module_id:
+                logger.error(f"BrainDriveWhyDetector: Failed to resolve module ID for {user_id}")
+                return {"success": False, "error": "Unable to resolve WhyDetector module ID"}
             
             # Create page content with layouts
             timestamp_ms = int(datetime.datetime.utcnow().timestamp() * 1000)
@@ -662,7 +663,7 @@ class BrainDriveWhyDetectorLifecycleManager(BaseLifecycleManager):
                             "h": 10,
                             "pluginId": self.plugin_data["plugin_slug"],
                             "args": {
-                                "moduleId": module_id,
+                                "moduleId": "BrainDriveWhyDetector",
                                 "displayName": "Why Discovery Coach"
                             }
                         }
@@ -676,7 +677,7 @@ class BrainDriveWhyDetectorLifecycleManager(BaseLifecycleManager):
                             "h": 6,
                             "pluginId": self.plugin_data["plugin_slug"],
                             "args": {
-                                "moduleId": module_id,
+                                "moduleId": "BrainDriveWhyDetector",
                                 "displayName": "Why Discovery Coach"
                             }
                         }
@@ -690,7 +691,7 @@ class BrainDriveWhyDetectorLifecycleManager(BaseLifecycleManager):
                             "h": 6,
                             "pluginId": self.plugin_data["plugin_slug"],
                             "args": {
-                                "moduleId": module_id,
+                                "moduleId": "BrainDriveWhyDetector",
                                 "displayName": "Why Discovery Coach"
                             }
                         }
@@ -715,8 +716,8 @@ class BrainDriveWhyDetectorLifecycleManager(BaseLifecycleManager):
             
             await db.execute(insert_stmt, {
                 "id": page_id,
-                "name": "Why Finder",
-                "route": "why-finder",
+                "name": "Why Finder v1",
+                "route": "why-finder-v1",
                 "content": json.dumps(content),
                 "creator_id": user_id,
                 "created_at": now,
@@ -743,7 +744,7 @@ class BrainDriveWhyDetectorLifecycleManager(BaseLifecycleManager):
             """)
             result = await db.execute(delete_stmt, {
                 "user_id": user_id,
-                "route": "why-finder"
+                "route": "why-finder-v1"
             })
             await db.commit()
             logger.info(f"BrainDriveWhyDetector: Deleted page for {user_id}", deleted_rows=result.rowcount)
