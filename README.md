@@ -1,180 +1,218 @@
-# BrainDrive WhyDetector Plugin
+# 🧭 WhyFinder - Discover Your Purpose
 
-A guided AI coaching experience to help users discover their personal "Why" - their core purpose and what truly drives them.
+**WhyFinder** is an AI-powered self-discovery journey that helps you uncover your core purpose, passions, and path in life. Through guided conversations, it leads you from finding your "Why" to building your complete Ikigai (reason for being).
 
-## Overview
+---
 
-This plugin implements a multi-phase coaching flow based on Simon Sinek's "Find Your Why" methodology. It uses BrainDrive's AI providers (Ollama, Anthropic, OpenAI, OpenRouter) to guide users through structured self-reflection.
+## 🌟 What Is This?
 
-## Changes Made from Plugin Template
+WhyFinder is your personal AI coach that guides you through three powerful frameworks:
 
-This plugin was built from scratch following BrainDrive plugin patterns. Key files created:
+1. **Why Finder** - Discover your core purpose and what drives you
+2. **Ikigai Builder** - Map out your complete life purpose using the Japanese Ikigai framework
+3. **Decision Helper** *(coming soon)* - Make life decisions aligned with your purpose
 
-### Source Files (`src/`)
+Think of it as having a thoughtful conversation with a coach who asks the right questions to help you understand yourself better.
 
-| File | Purpose |
-|------|---------|
-| `index.tsx` | Module Federation entry point |
-| `BrainDriveWhyDetector.tsx` | Main React component (600+ lines) |
-| `BrainDriveWhyDetector.css` | Modern styling with light/dark theme support |
-| `types.ts` | TypeScript interfaces and type definitions |
-| `prompts.ts` | AI system prompts for Coach and Quality Checker agents |
-| `services/aiService.ts` | AI provider communication service |
-| `services/index.ts` | Service exports |
+---
 
-### Configuration Files
+## 🎯 Who Is This For?
 
-| File | Purpose |
-|------|---------|
-| `package.json` | NPM dependencies and scripts |
-| `webpack.config.js` | Module Federation configuration |
-| `tsconfig.json` | TypeScript compiler settings |
-| `lifecycle_manager.py` | BrainDrive plugin installation handler |
+- Anyone feeling stuck or uncertain about their direction in life
+- People considering career changes or new ventures
+- Those wanting to understand themselves more deeply
+- Anyone curious about their core motivations and passions
 
-## System Prompts
+**No experience needed** - just willingness to reflect honestly on your life experiences.
 
-### Coach Agent Prompt
+---
 
-The Coach agent uses a phase-aware system prompt that:
+## 📍 Where Can You Use It?
 
-1. **Sets personality**: Warm, curious, patient - not clinical or interrogative
-2. **Follows [Acknowledge] + [Build] + [Question] rhythm**:
-   - Acknowledge what user said
-   - Build with insight or connection
-   - Ask a deeper follow-up question
-3. **Phase-specific guidance**: Each phase has different goals and requirements
-4. **Session data context**: Includes collected energizers, drainers, stories, patterns
+WhyFinder runs inside **BrainDrive** - an AI-powered productivity platform. Once BrainDrive is running:
 
-### Quality Checker Agent Prompt
+1. Open BrainDrive in your browser
+2. Navigate to the Plugins section
+3. Find and launch "WhyFinder"
 
-The Quality Checker audits coaching quality and returns structured JSON:
+---
 
-```json
-{
-  "passed": boolean,
-  "score": number (0-100),
-  "issues": [
-    {
-      "type": "depth|warmth|synthesis|coverage|pacing",
-      "severity": "high|medium|low",
-      "description": "specific issue",
-      "suggestion": "how to fix"
-    }
-  ],
-  "recommendations": ["list of suggestions"],
-  "readyToTransition": boolean
-}
+## 🚀 How To Use It
+
+### Getting Started
+
+1. **Select an AI Model** - Choose from available AI providers (Claude, GPT, Llama, etc.)
+2. **Click "Start Why Finder Session"** - Begin your journey
+
+### The Journey
+
+The experience flows naturally through conversations. Just answer honestly - there are no wrong answers!
+
+---
+
+## 🔍 Phase 1: Why Finder
+
+**Goal:** Discover your core "Why" statement - the purpose that drives everything you do.
+
+### What Happens:
+- The coach asks about your life experiences, peak moments, and frustrations
+- You'll explore what energizes you and what drains you
+- Stories from your past reveal patterns about who you are
+- After **12 exchanges**, the coach synthesizes everything into your personal Why statement
+
+### What You'll Discover:
+- ✨ **What You Love** - Activities and topics that light you up
+- 💪 **What You're Good At** - Your natural strengths and talents
+- 🎯 **Your Why Statement** - A clear sentence capturing your core purpose
+- 🔄 **Patterns** - Recurring themes across your life experiences
+
+### Saving Your Why Profile:
+When the conversation completes, you'll see a **"Save Why Profile"** button. Give your profile a name and save it - you'll need this for the Ikigai Builder!
+
+> ⚠️ **Important:** You must save a Why Profile before starting the Ikigai Builder.
+
+---
+
+## 🌸 Phase 2: Ikigai Builder
+
+**Goal:** Build your complete Ikigai - the intersection of passion, mission, vocation, and profession.
+
+### What Is Ikigai?
+Ikigai is a Japanese concept meaning "reason for being." It's found at the intersection of four elements:
+
+```
+        What You LOVE
+              ↓
+    ┌─────────────────┐
+    │                 │
+What You're  →  IKIGAI  ←  What the World
+ GOOD AT      │         │     NEEDS
+              └─────────┘
+                  ↑
+        What You Can Be
+           PAID FOR
 ```
 
-## Guardrails
+### The Four Phases:
 
-### Technical Guardrails
+**Phase 1: What You Love 💖**
+- Explores your passions beyond what you already identified
+- Digs deeper into activities that make you lose track of time
 
-1. **JSON validation for checker**: Strict parsing with regex extraction
-2. **Phase constraints**: Cannot transition until requirements met
-3. **Length control**: Max 1024 tokens per coach response
-4. **Error handling**: Graceful failures with user-friendly messages
+**Phase 2: What You're Good At 🎯**
+- May auto-fill from your Why Profile if sufficient data exists
+- Otherwise explores your skills, talents, and competencies
 
-### Safety Guardrails
+**Phase 3: What the World Needs 🌍**
+- Looks outward at problems you care about
+- Identifies who you want to help and why
 
-1. **Crisis detection**: Keywords like "suicide", "self harm", etc. trigger safe response
-2. **Crisis response**: Provides mental health resources, pauses coaching
-3. **Disclaimer**: Clear statement that this is not therapy
-4. **Tone rules**: No diagnosing, no medical language
+**Phase 4: What You Can Be Paid For 💰**
+- Explores monetization paths for your purpose
+- Considers current and potential income sources
 
-## Session Phases
+### How Each Phase Works:
+- Answer **3 meaningful questions** per phase
+- After 3 answers, the phase automatically completes
+- Your answers are summarized before moving to the next phase
+- A counter shows your progress: `1/3`, `2/3`, `3/3`
 
-| Phase | Description | Requirements |
-|-------|-------------|--------------|
-| `intro` | Welcome and framing | 2 messages |
-| `snapshot` | Current situation overview | 4 messages, role identified |
-| `energy_map` | Energizers and drainers | 3+ energizers, 3+ drainers |
-| `deep_stories` | Narrative exploration | 2+ stories with emotional depth |
-| `patterns` | Pattern recognition | 1+ confirmed pattern |
-| `statement` | Why statement drafting | Statement created |
-| `action` | Action planning | 2+ action items |
-| `completed` | Session summary | - |
+### The Sweet Spots:
+After all four phases, the coach reveals your **overlaps**:
 
-## Data Structures
+| Overlap | Intersection | Meaning |
+|---------|--------------|---------|
+| **Passion** | Love + Good At | What fulfills you |
+| **Mission** | Love + World Needs | What gives you meaning |
+| **Vocation** | World Needs + Paid For | What creates impact |
+| **Profession** | Good At + Paid For | What builds career |
+| **IKIGAI** | All Four | Your reason for being |
 
-### SessionData
+### Saving Your Ikigai Profile:
+When all overlaps are revealed, save your Ikigai Profile for future reference and for the Decision Helper.
 
-```typescript
-interface SessionData {
-  snapshot: PersonalSnapshot | null;
-  energizers: EnergyItem[];
-  drainers: EnergyItem[];
-  stories: Story[];
-  patterns: Pattern[];
-  themes: string[];
-  whyStatement: string;
-  whyDrafts: string[];
-  actionItems: ActionItem[];
-}
-```
+---
 
-### EnergyItem
+## 💾 Saving & Loading
 
-```typescript
-interface EnergyItem {
-  id: string;
-  description: string;
-  type: 'energizer' | 'drainer';
-  rootCause?: string;
-  followUps: string[];
-  depth: number;
-}
-```
+### Why Profiles
+- Saved after completing the 12-exchange Why Finder conversation
+- Stored with: Why statement, patterns, what you love, what you're good at
+- Can be selected when starting Ikigai Builder
 
-## How It Works
+### Ikigai Profiles
+- Saved after completing all 4 phases and viewing overlaps
+- Contains summaries of each phase plus all overlap insights
+- Used by the Decision Helper (coming soon)
 
-### User Flow
+### Managing Profiles
+- View saved profiles in the sidebar
+- Delete profiles you no longer need
+- Start fresh with a new Why Finder session anytime
 
-1. User opens plugin → Welcome screen with journey overview
-2. Clicks "Start My Why Session" → Model selected, session begins
-3. Coach sends initial greeting with framing
-4. User answers questions through each phase
-5. Coach guides with [Acknowledge] + [Build] + [Question]
-6. Phase transitions happen automatically when requirements met
-7. Session completes with summary of findings
+---
 
-### AI Communication
+## ⏱️ Time Commitment
 
-1. Uses BrainDrive's `/api/v1/ai/providers/chat` endpoint
-2. Supports streaming responses via `postStreaming`
-3. Falls back to non-streaming if unavailable
-4. Model selection from all available providers
+| Phase | Typical Duration |
+|-------|------------------|
+| Why Finder | 20-30 minutes |
+| Ikigai Builder | 15-25 minutes |
+| **Total Journey** | **45-60 minutes** |
 
-### State Management
+*Take breaks if needed - your progress is saved!*
 
-- Session data persisted via `pluginState` service bridge
-- Messages stored in component state
-- Phase transitions tracked with message counts
-- Auto-restore on page refresh
+---
 
-## Known Limitations
+## 💡 Tips for Best Results
 
-1. **Model quality**: Small models (<7B) may miss instructions
-2. **JSON from checker**: May fail with less capable models
-3. **Session restore**: Only restores latest incomplete session
-4. **No cross-device sync**: Sessions stored locally
+1. **Be Honest** - There are no wrong answers, only your truth
+2. **Give Details** - Longer, specific answers lead to better insights
+3. **Share Stories** - Real examples from your life reveal the most
+4. **Take Your Time** - Don't rush; reflection takes space
+5. **Trust the Process** - Some questions may feel challenging, that's normal
 
-## Future Enhancements
+---
 
-- [ ] AI Memory integration for cross-session history
-- [ ] Export session as PDF/markdown
-- [ ] Multi-model support (different models for coach/checker)
-- [ ] Session history browser
-- [ ] Event Bridge integration for cross-plugin communication
+## 🔒 Privacy
 
-## License
+- Your conversations and profiles are stored locally
+- Nothing is shared externally
+- You control what you save and delete
 
-MIT License - Part of BrainDrive open source ecosystem.
+---
 
-## Credits
+## ❓ FAQ
+
+**Q: What if I don't know the answer?**
+A: That's okay! Say "I'm not sure" and the coach will help you explore.
+
+**Q: Can I redo a session?**
+A: Yes! Start a new Why Finder session anytime. Each profile is saved separately.
+
+**Q: Do I need to complete everything in one sitting?**
+A: No, but completing each phase (Why Finder or a single Ikigai phase) in one sitting gives the best results.
+
+**Q: What AI model should I use?**
+A: Any modern AI model works. Claude and GPT-4 give excellent results. Larger models = better understanding.
+
+**Q: Is this therapy?**
+A: No. WhyFinder is a self-reflection tool, not professional counseling. For mental health support, please consult a qualified professional.
+
+---
+
+## 🙏 Credits
 
 - Based on Simon Sinek's "Find Your Why" methodology
-- Built for BrainDrive community
-- Uses BrainDrive Plugin Template patterns
+- Inspired by the Japanese concept of Ikigai
+- Built as a BrainDrive plugin
 
+---
 
+## 📬 Support
+
+Having issues or suggestions? Open an issue on GitHub or reach out through BrainDrive community channels.
+
+---
+
+*May you find your Why and live your Ikigai.* 🌸

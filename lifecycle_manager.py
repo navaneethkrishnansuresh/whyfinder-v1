@@ -99,7 +99,7 @@ class BrainDriveWhyDetectorLifecycleManager(BaseLifecycleManager):
         self.plugin_data = {
             "name": "BrainDriveWhyDetector",
             "description": "Find Your Why - Multi-agent coaching flow to discover your core purpose",
-            "version": "1.0.2",
+            "version": "1.0.0",
             "type": "frontend",
             "icon": "Target",
             "category": "coaching",
@@ -663,7 +663,7 @@ class BrainDriveWhyDetectorLifecycleManager(BaseLifecycleManager):
                             "h": 10,
                             "pluginId": self.plugin_data["plugin_slug"],
                             "args": {
-                                "moduleId": "BrainDriveWhyDetector",
+                                "moduleId": module_id,
                                 "displayName": "Why Discovery Coach"
                             }
                         }
@@ -677,7 +677,7 @@ class BrainDriveWhyDetectorLifecycleManager(BaseLifecycleManager):
                             "h": 6,
                             "pluginId": self.plugin_data["plugin_slug"],
                             "args": {
-                                "moduleId": "BrainDriveWhyDetector",
+                                "moduleId": module_id,
                                 "displayName": "Why Discovery Coach"
                             }
                         }
@@ -691,7 +691,7 @@ class BrainDriveWhyDetectorLifecycleManager(BaseLifecycleManager):
                             "h": 6,
                             "pluginId": self.plugin_data["plugin_slug"],
                             "args": {
-                                "moduleId": "BrainDriveWhyDetector",
+                                "moduleId": module_id,
                                 "displayName": "Why Discovery Coach"
                             }
                         }
@@ -850,6 +850,224 @@ async def delete_plugin(user_id: str, db: AsyncSession, plugins_base_dir: str = 
 async def get_plugin_status(user_id: str, db: AsyncSession, plugins_base_dir: str = None) -> Dict[str, Any]:
     manager = BrainDriveWhyDetectorLifecycleManager(plugins_base_dir)
     return await manager.get_plugin_status(user_id, db)
+
+
+# ===========================================================================
+# FILE-BASED PROFILE STORAGE
+# ===========================================================================
+
+def get_plugin_dir() -> Path:
+    """Get the plugin directory path"""
+    return Path(__file__).parent
+
+def get_why_profiles_dir() -> Path:
+    """Get the why_profiles directory path"""
+    profiles_dir = get_plugin_dir() / "why_profiles"
+    profiles_dir.mkdir(parents=True, exist_ok=True)
+    return profiles_dir
+
+def get_ikigai_profiles_dir() -> Path:
+    """Get the ikigai_profiles directory path"""
+    profiles_dir = get_plugin_dir() / "ikigai_profiles"
+    profiles_dir.mkdir(parents=True, exist_ok=True)
+    return profiles_dir
+
+def sanitize_filename(name: str) -> str:
+    """Sanitize a filename to be safe for filesystem"""
+    # Remove/replace unsafe characters
+    safe_name = "".join(c if c.isalnum() or c in (' ', '-', '_') else '_' for c in name)
+    safe_name = safe_name.strip().replace(' ', '_')
+    return safe_name[:100]  # Limit length
+
+# WHY PROFILES
+def save_why_profile(profile_data: Dict[str, Any]) -> Dict[str, Any]:
+    """Save a Why profile to JSON file"""
+    try:
+        profiles_dir = get_why_profiles_dir()
+        
+        # Use profile name for filename, fallback to id
+        profile_name = profile_data.get('name', profile_data.get('id', 'unnamed'))
+        safe_name = sanitize_filename(profile_name)
+        profile_id = profile_data.get('id', f"why_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}")
+        
+        # Create filename: name_id.json
+        filename = f"{safe_name}_{profile_id[-8:]}.json"
+        filepath = profiles_dir / filename
+        
+        # Add metadata
+        profile_data['_filename'] = filename
+        profile_data['_savedAt'] = datetime.datetime.now().isoformat()
+        
+        # Save to file
+        with open(filepath, 'w', encoding='utf-8') as f:
+            json.dump(profile_data, f, indent=2, ensure_ascii=False, default=str)
+        
+        logger.info(f"WhyDetector: Saved Why profile to {filepath}")
+        return {'success': True, 'filename': filename, 'path': str(filepath)}
+        
+    except Exception as e:
+        logger.error(f"WhyDetector: Error saving Why profile: {e}")
+        return {'success': False, 'error': str(e)}
+
+def load_why_profiles() -> List[Dict[str, Any]]:
+    """Load all Why profiles from JSON files"""
+    try:
+        profiles_dir = get_why_profiles_dir()
+        profiles = []
+        
+        for filepath in profiles_dir.glob("*.json"):
+            try:
+                with open(filepath, 'r', encoding='utf-8') as f:
+                    profile = json.load(f)
+                    profile['_filename'] = filepath.name
+                    profiles.append(profile)
+            except Exception as e:
+                logger.warning(f"WhyDetector: Error loading profile {filepath}: {e}")
+                continue
+        
+        # Sort by creation date, newest first
+        profiles.sort(key=lambda p: p.get('createdAt', ''), reverse=True)
+        
+        logger.info(f"WhyDetector: Loaded {len(profiles)} Why profiles")
+        return profiles
+        
+    except Exception as e:
+        logger.error(f"WhyDetector: Error loading Why profiles: {e}")
+        return []
+
+def delete_why_profile(profile_id: str) -> Dict[str, Any]:
+    """Delete a Why profile JSON file"""
+    try:
+        profiles_dir = get_why_profiles_dir()
+        
+        # Find file with matching id
+        for filepath in profiles_dir.glob("*.json"):
+            try:
+                with open(filepath, 'r', encoding='utf-8') as f:
+                    profile = json.load(f)
+                    if profile.get('id') == profile_id:
+                        filepath.unlink()
+                        logger.info(f"WhyDetector: Deleted Why profile {filepath}")
+                        return {'success': True, 'deleted': str(filepath)}
+            except:
+                continue
+        
+        return {'success': False, 'error': 'Profile not found'}
+        
+    except Exception as e:
+        logger.error(f"WhyDetector: Error deleting Why profile: {e}")
+        return {'success': False, 'error': str(e)}
+
+# IKIGAI PROFILES
+def save_ikigai_profile(profile_data: Dict[str, Any]) -> Dict[str, Any]:
+    """Save an Ikigai profile to JSON file"""
+    try:
+        profiles_dir = get_ikigai_profiles_dir()
+        
+        profile_name = profile_data.get('name', profile_data.get('id', 'unnamed'))
+        safe_name = sanitize_filename(profile_name)
+        profile_id = profile_data.get('id', f"ikigai_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}")
+        
+        filename = f"{safe_name}_{profile_id[-8:]}.json"
+        filepath = profiles_dir / filename
+        
+        profile_data['_filename'] = filename
+        profile_data['_savedAt'] = datetime.datetime.now().isoformat()
+        
+        with open(filepath, 'w', encoding='utf-8') as f:
+            json.dump(profile_data, f, indent=2, ensure_ascii=False, default=str)
+        
+        logger.info(f"WhyDetector: Saved Ikigai profile to {filepath}")
+        return {'success': True, 'filename': filename, 'path': str(filepath)}
+        
+    except Exception as e:
+        logger.error(f"WhyDetector: Error saving Ikigai profile: {e}")
+        return {'success': False, 'error': str(e)}
+
+def load_ikigai_profiles() -> List[Dict[str, Any]]:
+    """Load all Ikigai profiles from JSON files"""
+    try:
+        profiles_dir = get_ikigai_profiles_dir()
+        profiles = []
+        
+        for filepath in profiles_dir.glob("*.json"):
+            try:
+                with open(filepath, 'r', encoding='utf-8') as f:
+                    profile = json.load(f)
+                    profile['_filename'] = filepath.name
+                    profiles.append(profile)
+            except Exception as e:
+                logger.warning(f"WhyDetector: Error loading profile {filepath}: {e}")
+                continue
+        
+        profiles.sort(key=lambda p: p.get('createdAt', ''), reverse=True)
+        
+        logger.info(f"WhyDetector: Loaded {len(profiles)} Ikigai profiles")
+        return profiles
+        
+    except Exception as e:
+        logger.error(f"WhyDetector: Error loading Ikigai profiles: {e}")
+        return []
+
+def delete_ikigai_profile(profile_id: str) -> Dict[str, Any]:
+    """Delete an Ikigai profile JSON file"""
+    try:
+        profiles_dir = get_ikigai_profiles_dir()
+        
+        for filepath in profiles_dir.glob("*.json"):
+            try:
+                with open(filepath, 'r', encoding='utf-8') as f:
+                    profile = json.load(f)
+                    if profile.get('id') == profile_id:
+                        filepath.unlink()
+                        logger.info(f"WhyDetector: Deleted Ikigai profile {filepath}")
+                        return {'success': True, 'deleted': str(filepath)}
+            except:
+                continue
+        
+        return {'success': False, 'error': 'Profile not found'}
+        
+    except Exception as e:
+        logger.error(f"WhyDetector: Error deleting Ikigai profile: {e}")
+        return {'success': False, 'error': str(e)}
+
+
+# API endpoint handlers (called via BrainDrive plugin API)
+def handle_profile_api(action: str, profile_type: str, data: Dict[str, Any] = None) -> Dict[str, Any]:
+    """
+    Handle profile API requests.
+    
+    Args:
+        action: 'save', 'load', 'delete'
+        profile_type: 'why' or 'ikigai'
+        data: Profile data for save, or {'id': ...} for delete
+    
+    Returns:
+        Response dict with success status and data/error
+    """
+    try:
+        if profile_type == 'why':
+            if action == 'save':
+                return save_why_profile(data)
+            elif action == 'load':
+                profiles = load_why_profiles()
+                return {'success': True, 'profiles': profiles}
+            elif action == 'delete':
+                return delete_why_profile(data.get('id'))
+        elif profile_type == 'ikigai':
+            if action == 'save':
+                return save_ikigai_profile(data)
+            elif action == 'load':
+                profiles = load_ikigai_profiles()
+                return {'success': True, 'profiles': profiles}
+            elif action == 'delete':
+                return delete_ikigai_profile(data.get('id'))
+        
+        return {'success': False, 'error': f'Invalid action or profile type: {action}/{profile_type}'}
+        
+    except Exception as e:
+        logger.error(f"WhyDetector: API error: {e}")
+        return {'success': False, 'error': str(e)}
 
 
 # Test script

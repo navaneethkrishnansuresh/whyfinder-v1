@@ -1,0 +1,88 @@
+═══════════════════════════════════════════════════════════════════
+PHASE SUMMARIZATION - DETAILED EXTRACTION
+═══════════════════════════════════════════════════════════════════
+
+You are summarizing a completed Ikigai phase conversation.
+
+Your task: Extract ALL meaningful information from this conversation
+and structure it for storage. This will be used for:
+1. Short context summary for the next phase (2-3 sentences)
+2. Full detailed storage in the user's Ikigai profile
+
+BE COMPREHENSIVE. Capture everything - don't summarize away details.
+
+═══════════════════════════════════════════════════════════════════
+PHASE BEING SUMMARIZED: {phase_name}
+═══════════════════════════════════════════════════════════════════
+
+CONVERSATION:
+{conversation}
+
+═══════════════════════════════════════════════════════════════════
+EXTRACTION RULES
+═══════════════════════════════════════════════════════════════════
+
+1. Capture EVERY specific item mentioned, not just the main ones
+2. Include EXACT quotes when meaningful (verbatim from user)
+3. Note any nuances, caveats, "but..." or "except..." statements
+4. Preserve specific examples, stories, and anecdotes
+5. Don't paraphrase away important details
+6. Include emotional context ("I love...", "I hate...", "I feel...")
+7. Create a short context_summary (2-3 sentences) for next phase
+
+═══════════════════════════════════════════════════════════════════
+OUTPUT FORMAT (JSON ONLY)
+═══════════════════════════════════════════════════════════════════
+
+For PHASE 1 (What I Love):
+{
+  "phase": "phase1_love",
+  "love": {
+    "bullets": ["specific activity/thing 1", "specific activity/thing 2", ...],
+    "quotes": ["exact quote from user 1", "exact quote 2", ...],
+    "summary": "2-3 sentence narrative summary of what they love"
+  },
+  "key_insights": ["pattern or insight 1", "pattern or insight 2", ...],
+  "context_summary": "2-3 sentence summary to pass to next phase"
+}
+
+For PHASE 2 (What I'm Good At):
+{
+  "phase": "phase2_good_at",
+  "good_at": {
+    "bullets": ["specific skill 1", "specific talent 2", ...],
+    "quotes": ["exact quote from user 1", "exact quote 2", ...],
+    "summary": "2-3 sentence narrative summary of their strengths"
+  },
+  "key_insights": ["pattern or insight 1", "pattern or insight 2", ...],
+  "context_summary": "2-3 sentence summary to pass to next phase"
+}
+
+For PHASE 3 (What the World Needs):
+{
+  "phase": "phase3_world",
+  "world_needs": {
+    "bullets": ["specific problem/cause 1", "specific problem/cause 2", ...],
+    "quotes": ["exact quote from user 1", "exact quote 2", ...],
+    "who_to_help": ["specific group/community 1", "specific group 2", ...],
+    "summary": "2-3 sentence narrative summary of world needs they care about"
+  },
+  "key_insights": ["pattern or insight 1", "pattern or insight 2", ...],
+  "context_summary": "2-3 sentence summary to pass to next phase"
+}
+
+For PHASE 4 (What I Can Be Paid For):
+{
+  "phase": "phase4_paid",
+  "paid_for": {
+    "current": ["current income source 1", "current income source 2", ...],
+    "potential": ["potential income path 1", "potential income path 2", ...],
+    "constraints": ["financial constraint 1", "time constraint", ...],
+    "quotes": ["exact quote from user 1", "exact quote 2", ...],
+    "summary": "2-3 sentence narrative summary of monetization paths"
+  },
+  "key_insights": ["pattern or insight 1", "pattern or insight 2", ...],
+  "context_summary": "2-3 sentence summary for final profile"
+}
+
+Return ONLY valid JSON. Do NOT include any text before or after.

@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+
+# Build outputs (include dist/ for release)
+# dist/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs
+*.log
+npm-debug.log*
+
+# Environment
+.env
+.env.local
+
+# User data - DO NOT COMMIT
+why_profiles/
+ikigai_profiles/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+*.so
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+

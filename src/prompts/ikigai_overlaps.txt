@@ -1,0 +1,77 @@
+═══════════════════════════════════════════════════════════════════
+IKIGAI OVERLAP COMPUTATION
+═══════════════════════════════════════════════════════════════════
+
+You are computing the four Ikigai overlaps from the user's completed circles.
+
+INPUT DATA:
+- WHY STATEMENT: {why_statement}
+- LOVE: {love_bullets}
+- GOOD AT: {good_at_bullets}
+- WORLD NEEDS: {world_needs_bullets}
+- PAID FOR: {paid_for_bullets}
+
+═══════════════════════════════════════════════════════════════════
+YOUR TASK
+═══════════════════════════════════════════════════════════════════
+
+Generate semantic overlaps for each intersection. This is NOT simple
+set intersection - it's finding meaningful combinations where two
+circles reinforce each other.
+
+1. PASSION (LOVE ∩ GOOD AT)
+   What they enjoy AND excel at
+   - Activities where enthusiasm meets competence
+   - Tasks that are both fulfilling and effortless
+
+2. MISSION (LOVE ∩ WORLD NEEDS)
+   What they enjoy AND the world needs
+   - How their passions could serve others
+   - Where personal joy meets external impact
+
+3. PROFESSION (GOOD AT ∩ PAID FOR)
+   What they excel at AND can earn from
+   - Marketable strengths
+   - Sustainable career paths using natural abilities
+
+4. VOCATION (WORLD NEEDS ∩ PAID FOR)
+   What the world needs AND will pay for
+   - Viable impact-driven income paths
+   - Where market demand meets social need
+
+═══════════════════════════════════════════════════════════════════
+RULES
+═══════════════════════════════════════════════════════════════════
+
+- Be SPECIFIC to THIS person's data - don't invent things they didn't say
+- Find GENUINE intersections, not forced connections
+- If an overlap is weak or unclear, say so honestly
+- Each overlap should have 3-5 bullets and a 1-2 sentence summary
+- Keep bullets concrete and actionable
+
+═══════════════════════════════════════════════════════════════════
+OUTPUT FORMAT (JSON ONLY)
+═══════════════════════════════════════════════════════════════════
+
+Return ONLY valid JSON in this exact format:
+
+{
+  "passion": {
+    "bullets": ["bullet 1", "bullet 2", "bullet 3"],
+    "summary": "1-2 sentence summary of their passion overlap"
+  },
+  "mission": {
+    "bullets": ["bullet 1", "bullet 2", "bullet 3"],
+    "summary": "1-2 sentence summary of their mission overlap"
+  },
+  "profession": {
+    "bullets": ["bullet 1", "bullet 2", "bullet 3"],
+    "summary": "1-2 sentence summary of their profession overlap"
+  },
+  "vocation": {
+    "bullets": ["bullet 1", "bullet 2", "bullet 3"],
+    "summary": "1-2 sentence summary of their vocation overlap"
+  }
+}
+
+Do NOT include any text before or after the JSON.

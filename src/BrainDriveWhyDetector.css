@@ -1,6 +1,7 @@
 /**
  * BrainDriveWhyDetector Styles
  * Matching BrainDriveChat color scheme and design
+ * With Phase Tracker and Themed Buttons
  */
 
 /* ============================================================================
@@ -22,6 +23,11 @@
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  /* Theme accent for Ikigai/Decision Helper cards */
+  --accent-gradient: linear-gradient(135deg, #2196f3, #1976d2);
+  --accent-color: #2196f3;
+  --accent-color-light: rgba(33, 150, 243, 0.1);
+  --accent-border: rgba(33, 150, 243, 0.3);
 }
 
 .why-detector.dark-theme {
@@ -36,6 +42,8 @@
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+  --accent-color-light: rgba(33, 150, 243, 0.15);
+  --accent-border: rgba(33, 150, 243, 0.4);
 }
 
 /* ============================================================================
@@ -291,6 +299,7 @@
   background: var(--paper-bg);
   border-bottom: 1px solid var(--border-color);
   flex-shrink: 0;
+  gap: 12px;
 }
 
 .header-left {
@@ -305,13 +314,22 @@
   color: var(--text-color);
 }
 
+.header-center {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  justify-content: center;
+}
+
 .header-right {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.model-select {
+.model-select,
+.profile-select {
   padding: 6px 10px;
   font-size: 12px;
   background: var(--input-bg);
@@ -319,11 +337,92 @@
   border: 1px solid var(--border-color);
   border-radius: 6px;
   cursor: pointer;
+  max-width: 180px;
 }
 
-.model-select:focus {
+.model-select:focus,
+.profile-select:focus {
   outline: none;
   border-color: var(--button-primary-bg);
+}
+
+.btn-back {
+  padding: 4px 10px;
+  font-size: 12px;
+  background: transparent;
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn-back:hover {
+  background: var(--hover-color);
+}
+
+/* Ikigai Builder Button */
+.btn-ikigai-builder {
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  background: var(--accent-gradient);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn-ikigai-builder:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+}
+
+.btn-ikigai-builder:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Decision Helper Button - Now using theme color */
+.btn-decision-helper {
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  background: var(--accent-gradient);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn-decision-helper:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+}
+
+.btn-decision-helper:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Skip Button */
+.btn-skip {
+  padding: 8px 16px;
+  font-size: 13px;
+  background: transparent;
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s;
+  opacity: 0.7;
+}
+
+.btn-skip:hover {
+  background: var(--hover-color);
+  opacity: 1;
 }
 
 .btn-get-why {
@@ -348,7 +447,103 @@
   cursor: not-allowed;
 }
 
-/* Phase indicator - simplified */
+/* ============================================================================
+   PHASE TRACKER - NEW
+   ============================================================================ */
+.phase-tracker {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 1rem;
+  background: var(--input-bg);
+  border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
+}
+
+.tracker-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-color);
+  opacity: 0.7;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.phase-dots {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+/* Why Finder tracker - 12 dots */
+.why-finder-tracker .phase-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--border-color);
+  transition: all 0.2s ease;
+}
+
+.why-finder-tracker .phase-dot.complete {
+  background: var(--accent-color);
+}
+
+.why-finder-tracker .phase-dot.current {
+  background: var(--accent-color);
+  box-shadow: 0 0 0 3px var(--accent-color-light);
+  transform: scale(1.2);
+}
+
+.tracker-count {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-color);
+  opacity: 0.6;
+  margin-left: 4px;
+}
+
+/* Ikigai tracker - 4 dots (larger) */
+.ikigai-tracker .phase-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--border-color);
+  transition: all 0.2s ease;
+}
+
+.ikigai-tracker .phase-dot.complete {
+  background: var(--status-success-color);
+}
+
+.ikigai-tracker .phase-dot.current {
+  background: var(--accent-color);
+  box-shadow: 0 0 0 3px var(--accent-color-light);
+  transform: scale(1.15);
+}
+
+.ikigai-tracker .phase-dot.auto-filled {
+  background: var(--status-success-color);
+  position: relative;
+}
+
+.ikigai-tracker .phase-dot.auto-filled::after {
+  content: '✓';
+  position: absolute;
+  font-size: 8px;
+  color: white;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.tracker-phase-name {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-color);
+  margin-left: 6px;
+}
+
+/* Old phase indicator - keep for compatibility */
 .phase-indicator {
   display: flex;
   align-items: center;
@@ -356,21 +551,8 @@
   position: relative;
 }
 
-.phase-dots {
-  display: flex;
-  gap: 4px;
-}
-
-.phase-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--border-color);
-  transition: all 0.2s;
-}
-
 .phase-dot.completed {
-  background: #9ca3af; /* Grey for completed phases */
+  background: #9ca3af;
 }
 
 .phase-dot.active {
@@ -786,6 +968,213 @@
 }
 
 /* ============================================================================
+   IKIGAI BUILDER UI - THEMED (No Purple!)
+   ============================================================================ */
+
+/* Build Ikigai Prompt - Now using theme color */
+.ikigai-prompt-container {
+  display: flex;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.ikigai-prompt {
+  max-width: 500px;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(236, 72, 153, 0.1));
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  border-radius: 12px;
+  text-align: center;
+}
+
+/* Themed version - uses primary blue */
+.ikigai-prompt.themed {
+  background: var(--accent-color-light);
+  border: 1px solid var(--accent-border);
+}
+
+.ikigai-prompt p {
+  margin: 0 0 1rem;
+  line-height: 1.6;
+  color: var(--text-color);
+}
+
+.btn-build-ikigai {
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  background: linear-gradient(135deg, #8b5cf6, #ec4899);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+/* Themed version - uses primary blue */
+.btn-build-ikigai.themed {
+  background: var(--accent-gradient);
+}
+
+.btn-build-ikigai:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(139, 92, 246, 0.3);
+}
+
+.btn-build-ikigai.themed:hover {
+  box-shadow: 0 8px 20px rgba(33, 150, 243, 0.3);
+}
+
+/* Profile Save Container */
+.profile-save-container {
+  display: flex;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.profile-save-card {
+  max-width: 450px;
+  width: 100%;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(236, 72, 153, 0.1));
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  border-radius: 12px;
+  text-align: center;
+}
+
+/* Themed version */
+.profile-save-card.themed {
+  background: var(--accent-color-light);
+  border: 1px solid var(--accent-border);
+}
+
+.profile-save-card h4 {
+  margin: 0 0 8px;
+  font-size: 16px;
+  color: var(--text-color);
+}
+
+.profile-save-card p {
+  margin: 0 0 1rem;
+  font-size: 13px;
+  color: var(--text-color);
+  opacity: 0.8;
+}
+
+.profile-save-form {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* Profile Name Input */
+.profile-name-container {
+  display: flex;
+  gap: 12px;
+  padding: 1rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.profile-name-input {
+  padding: 10px 16px;
+  font-size: 14px;
+  background: var(--input-bg);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  width: 260px;
+  max-width: 100%;
+}
+
+.profile-name-input:focus {
+  outline: none;
+  border-color: var(--button-primary-bg);
+}
+
+.profile-name-input::placeholder {
+  color: var(--text-color);
+  opacity: 0.5;
+}
+
+.btn-save-profile {
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+/* Themed version - uses primary blue */
+.btn-save-profile.themed {
+  background: var(--accent-gradient);
+}
+
+.btn-save-profile:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.btn-save-profile.themed:hover:not(:disabled) {
+  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+}
+
+.btn-save-profile:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Ikigai Summary Styles */
+.message-bubble h2,
+.message-bubble h3 {
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  color: var(--text-color);
+}
+
+.message-bubble h2:first-child,
+.message-bubble h3:first-child {
+  margin-top: 0;
+}
+
+.message-bubble hr {
+  border: none;
+  border-top: 1px solid var(--border-color);
+  margin: 1rem 0;
+}
+
+/* Mode Indicator Badge */
+.mode-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  border-radius: 4px;
+  margin-left: 8px;
+}
+
+.mode-badge.why-finder {
+  background: rgba(33, 150, 243, 0.2);
+  color: #2196f3;
+}
+
+.mode-badge.ikigai-builder {
+  background: var(--accent-color-light);
+  color: var(--accent-color);
+}
+
+.mode-badge.decision-helper {
+  background: var(--accent-color-light);
+  color: var(--accent-color);
+}
+
+/* ============================================================================
    RESPONSIVE
    ============================================================================ */
 @media (max-width: 640px) {
@@ -807,8 +1196,42 @@
   }
 
   .header-left,
+  .header-center,
   .header-right {
     width: 100%;
-    justify-content: space-between;
+    justify-content: center;
+  }
+
+  .header-left {
+    justify-content: flex-start;
+  }
+
+  .profile-name-container,
+  .profile-save-form {
+    flex-direction: column;
+  }
+
+  .profile-name-input {
+    width: 100%;
+  }
+
+  .profile-select,
+  .model-select {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .phase-tracker {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .phase-dots {
+    flex-wrap: wrap;
+  }
+
+  .why-finder-tracker .phase-dot {
+    width: 6px;
+    height: 6px;
   }
 }
